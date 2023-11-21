@@ -233,8 +233,8 @@ Die Kombination aus Selbststudium, Nutzung von Online-Communities, Austausch mit
 
 ## A. Installationsanleitung
 
-Die Installation habe ich ausgelagert in (INSTALL.md)[INSTALL.md]
+Die Installation habe ich ausgelagert in [INSTALL.md](INSTALL.md)
 
 ## B. Benutzerdokumentation
 
-Die Benutzerdokumentation habe ich ausgelagert in (HOTWO.md)[HOWTO.md]
+Die Benutzerdokumentation habe ich ausgelagert in [HOTWO.md](HOWTO.md)
