@@ -1,7 +1,8 @@
 <template>
     <div class="wrapper">
-        <input type="text" v-model="inputValue" @input="handleChange" class="inputs" />
-        <button @click="sendInput" class="buttons">Submit</button>
+        <input ref="input" type="text" v-model="inputValue" class="inputs" :disabled="loading"/>
+        <button @click="sendInput" class="buttons" v-if="!loading">Submit</button>
+        <button class="buttons" v-if="loading" disabled>Loading...</button>
     </div>
 </template>
 
@@ -13,6 +14,7 @@ export default {
         addMessage: {
             type: Function,
         },
+        loading: Boolean,
     },
     data() {
         return {
@@ -24,18 +26,11 @@ export default {
             // Send the input to the backend
             // You can use axios or any other HTTP library for this
             // Example using axios:
-            this.addMessage({
-                text: this.inputValue,
-                role: "user",
-                id: 3
-            })
-
-            try {
-                const response = await fetch('/api/endpoint');
-                console.log(response.data);
-            } catch (error) {
-                console.error(error);
-            }
+            await this.addMessage({
+                content: this.inputValue,
+                role: "user"
+            });
+            this.inputValue = '';
         },
         handleChange(event) {
             this.inputValue = event.target.value;

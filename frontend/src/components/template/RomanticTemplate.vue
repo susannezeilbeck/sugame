@@ -1,17 +1,19 @@
 <template>
   <div class="landing-page">
     <div class="header">
-      <a href="/"><h1 class="title">Sugame</h1></a>
+      <a href="/">
+        <h1 class="title">Sugame</h1>
+      </a>
       <h1 class="title">></h1>
       <h1 class="title">Romantic</h1>
 
     </div>
     <div class="description">
       <pre class="text" v-for="content in contents"
-        :key="content.id"><b class="role">{{ content.role }}:</b> {{ content.text }}</pre>
+        :key="content.id"><b class="role">{{ content.role }}:</b> {{ content.content }}</pre>
     </div>
     <div class="buttons">
-      <InputOrganism :addMessage="addMessage" />
+      <InputOrganism :addMessage="addMessage" :loading="loading" />
     </div>
   </div>
 </template>
@@ -25,20 +27,32 @@ export default {
     return {
       contents: [
         {
-          text: `In this romantic novel, you find yourself in a quaint, picturesque village nestled in the lush, rolling hills of the French countryside. It's early summer, and the air is fragrant with the scent of blooming flowers and freshly baked pastries from the local boulangerie. Cobblestone streets are lined with charming houses adorned with vibrant shutters and cascading flower boxes.
+          content: `In this romantic novel, you find yourself in a quaint, picturesque village nestled in the lush, rolling hills of the French countryside. It's early summer, and the air is fragrant with the scent of blooming flowers and freshly baked pastries from the local boulangerie. Cobblestone streets are lined with charming houses adorned with vibrant shutters and cascading flower boxes.
 
 You've just arrived at a cozy, ivy-covered inn, your home for the next few days. As you step out, the warm sunlight gently caresses your face, and a soft breeze carries the distant sound of a violin playing a melodious tune. The village square, a short stroll away, is alive with activity: artists painting, couples strolling, and a small farmers' market offering local delicacies.
 
 As the game master, I ask: What would you like to do next in this idyllic setting? Perhaps explore the village square, visit the local patisserie for a taste of the famous pastries, or maybe strike up a conversation with one of the intriguing locals? The choice is yours!`
           ,
-          role: "assistant",
-          id: 1
-        }]
+          role: "assistant"
+        }],
+      loading: false
     }
   },
   methods: {
-    addMessage(message) {
+    async addMessage(message) {
       this.contents.push(message)
+      this.loading = true
+      const response = await fetch('/api', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.contents)
+      })
+      const respMessage = await response.json();
+      this.contents.push(respMessage)
+      this.loading = false
     }
   },
   components: {
@@ -61,7 +75,7 @@ a:hover {
 .header {
   display: flex;
   flex-direction: row;
-  width:100%;
+  width: 100%;
   align-items: center;
   justify-content: center;
   gap: 10px;
@@ -87,8 +101,8 @@ a:hover {
   text-align: left;
   height: calc(100vH - 240px);
   overflow-y: auto;
-  background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.5)),
-  url('@/assets/romantic.png');
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5)),
+    url('@/assets/romantic.png');
   background-size: cover;
   background-position: bottom;
 }

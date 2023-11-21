@@ -8,10 +8,10 @@
     </div>
     <div class="description">
       <pre class="text" v-for="content in contents"
-        :key="content.id"><b class="role">{{ content.role }}:</b> {{ content.text }}</pre>
+        :key="content.content"><b class="role">{{ content.role }}:</b> {{ content.content }}</pre>
     </div>
     <div class="buttons">
-      <InputOrganism :addMessage="addMessage" />
+      <InputOrganism :addMessage="addMessage" :loading="loading" />
     </div>
   </div>
 </template>
@@ -25,19 +25,31 @@ export default {
     return {
       contents: [
         {
-          text: `In the heart of a bustling steampunk city, you find yourself standing on a cobbled street lined with towering structures of brass and copper. Steam hisses from pipes and gears whirr in the background. Above, airships drift lazily across a smog-filled sky, their propellers churning the air. To your right, a market buzzes with vendors selling clockwork gadgets and exotic spices. To your left, a grand railway station looms, with steam trains arriving and departing, belching clouds of steam.
+          content: `In the heart of a bustling steampunk city, you find yourself standing on a cobbled street lined with towering structures of brass and copper. Steam hisses from pipes and gears whirr in the background. Above, airships drift lazily across a smog-filled sky, their propellers churning the air. To your right, a market buzzes with vendors selling clockwork gadgets and exotic spices. To your left, a grand railway station looms, with steam trains arriving and departing, belching clouds of steam.
 
 A mysterious figure in a trench coat and goggles approaches you, holding a sealed envelope. They glance around furtively before handing it to you and disappearing into the crowd. You feel the weight of the envelope in your hands, aware that it could contain anything from a map to a secret invention blueprint, or even an invitation to an underground society.
 
 What would you like to do next?`,
-          role: "assistant",
-          id: 1
-        }]
+          role: "assistant"
+        }],
+      loading: false
     }
   },
   methods: {
-    addMessage(message) {
+    async addMessage(message) {
       this.contents.push(message)
+      this.loading = true
+      const response = await fetch('/api', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.contents)
+      })
+      const respMessage = await response.json();
+      this.contents.push(respMessage)
+      this.loading = false
     }
   },
   components: {

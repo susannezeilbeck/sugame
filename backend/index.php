@@ -7,6 +7,12 @@ session_start();
 // Include router class
 include('src/lib/Route.php');
 
+
+// Add base route (startpage)
+Route::add('/test/api', function () {
+    require __DIR__ . '/src/views/test.php';
+}, "post");
+
 // Add base route (startpage)
 Route::add('/game/([1-9]*)', function ($choice) {
     require __DIR__ . '/src/views/game.php';
